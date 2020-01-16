@@ -1,0 +1,31 @@
+server:
+  requestLog:
+    appenders:
+        - type: file
+          currentLogFilename: logs/doppler-metastore-service-int-access.log
+          archive: true
+          archivedLogFilenamePattern: logs/doppler-metastore-service-int-access-%d.log.gz
+          archivedFileCount: 1
+          timeZone: UTC
+
+logging:
+  level: INFO
+  appenders:
+    - type: file
+      currentLogFilename: logs/doppler-metastore-service-int.txt
+      archive: true
+      archivedLogFilenamePattern: logs/doppler-metastore-service-int-%d.log.gz
+      archivedFileCount: 1
+      timeZone: UTC
+
+swagger:
+  resourcePackage: com.expedia.www.doppler.metastore.service.resources
+
+
+server:
+  applicationConnectors:
+      - type: http
+        port: 8080
+  adminConnectors:
+      - type: http
+        port: 8081

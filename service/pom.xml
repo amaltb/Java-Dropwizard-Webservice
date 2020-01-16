@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>doppler-metastore-service</artifactId>
+        <groupId>com.example.ab</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <mainClass>com.ab.example.metastore.service.Service</mainClass>
+    </properties>
+
+    <artifactId>service-doppler-metastore</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.expedia.www</groupId>
+            <artifactId>commons-doppler-metastore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.6.jre7</version>
+        </dependency>
+
+        <!-- for integration testing -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.3.175</version>
+        </dependency>
+        <dependency>
+            <groupId>com.expedia.www</groupId>
+            <artifactId>commons-doppler-metastore</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>doppler-metastore-service</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <configuration>
+                    <mainClass>${mainClass}</mainClass>
+                    <arguments>
+                        <argument>server</argument>
+                        <argument>target/classes/config/dev.yml</argument>
+                    </arguments>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>application.name</key>
+                            <value>doppler-metastore-service</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>application.home</key>
+                            <value>.</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>application.environment</key>
+                            <value>dev</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
