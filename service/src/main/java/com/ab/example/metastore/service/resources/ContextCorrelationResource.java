@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.ContextToContextMap;
-import com.ab.example.metastore.service.dao.ContextToContextMapDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.ContextToContextMapDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,9 +25,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/context-correlations
  *        GET /api/v1/context-correlation/{id}
- *        DELETE /api/v1/context-correlation/{id}/delete
- *        PUT /api/v1/context-correlation/{id}/update
- *        POST /api/v1/context-correlation/create
+ *        DELETE /api/v1/context-correlation/{id}
+ *        PUT /api/v1/context-correlation/{id}
+ *        POST /api/v1/context-correlation
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -73,7 +74,7 @@ public class ContextCorrelationResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular context correlation by its id")
-    @Path(Constants.API_V1_VERSION + "/context-correlation/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/context-correlation/{id}")
     public Response deleteContextCorrelation(@PathParam("id") final long id) throws MetaStoreException {
         try {
             contextToContextMapDao.delete(id);
@@ -99,12 +100,14 @@ public class ContextCorrelationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing context correlation")
-    @Path(Constants.API_V1_VERSION + "/context-correlation/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/context-correlation/{id}")
     public Response updateContextCorrelation(@PathParam("id") final long id,
                                           @Valid @NotNull final ContextToContextMap contextMap)
             throws MetaStoreException {
         try {
-            contextToContextMapDao.update(contextMap);
+            final ContextToContextMap curContextMap = contextToContextMapDao.find(id);
+            ResourceUtil.updateEntityParams(curContextMap, contextMap, ContextToContextMap.class);
+            contextToContextMapDao.update(curContextMap);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -126,7 +129,7 @@ public class ContextCorrelationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new context correlation")
-    @Path(Constants.API_V1_VERSION + "/context-correlation/create")
+    @Path(Constants.API_V1_VERSION + "/context-correlation")
     public ContextToContextMap createContextCorrelation(@Valid @NotNull final ContextToContextMap contextMap)
             throws MetaStoreException {
         try {

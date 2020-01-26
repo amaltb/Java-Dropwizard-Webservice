@@ -1,10 +1,11 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Correlation;
-import com.ab.example.metastore.service.dao.CorrelationDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.dao.CorrelationDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
 import com.expedia.www.doppler.metastore.commons.list_entities.CorrelationLight;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,9 +27,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/correlations
  *        GET /api/v1/correlation/{id}
- *        DELETE /api/v1/correlation/{id}/delete
- *        PUT /api/v1/correlation/{id}/update
- *        POST /api/v1/correlation/create
+ *        DELETE /api/v1/correlation/{id}
+ *        PUT /api/v1/correlation/{id}
+ *        POST /api/v1/correlation
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -99,7 +100,7 @@ public class CorrelationResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular correlation-type by its id")
-    @Path(Constants.API_V1_VERSION + "/correlation/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/correlation/{id}")
     public Response deleteCorrelationType(@PathParam("id") final long id) throws MetaStoreException {
         try {
             correlationDao.delete(id);
@@ -125,12 +126,14 @@ public class CorrelationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing correlation-type")
-    @Path(Constants.API_V1_VERSION + "/correlation/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/correlation/{id}")
     public Response updateCorrelationType(@PathParam("id") final long id,
                                              @Valid @NotNull final Correlation correlation)
             throws MetaStoreException {
         try {
-            correlationDao.update(correlation);
+            final Correlation curCorrelation = correlationDao.find(id);
+            ResourceUtil.updateEntityParams(curCorrelation, correlation, Correlation.class);
+            correlationDao.update(curCorrelation);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -152,7 +155,7 @@ public class CorrelationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new correlation-type")
-    @Path(Constants.API_V1_VERSION + "/correlation/create")
+    @Path(Constants.API_V1_VERSION + "/correlation")
     public Correlation createCorrelationType(@Valid @NotNull final Correlation correlation)
             throws MetaStoreException {
         try {

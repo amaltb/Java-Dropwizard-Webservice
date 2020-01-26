@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.WidgetGroup;
-import com.ab.example.metastore.service.dao.WidgetGroupDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.WidgetGroupDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,9 +25,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/widget-groups
  *        GET /api/v1/widget-group/{id}
- *        DELETE /api/v1/widget-group/{id}/delete
- *        PUT /api/v1/widget-group/{id}/update
- *        POST /api/v1/widget-group/create
+ *        DELETE /api/v1/widget-group/{id}
+ *        PUT /api/v1/widget-group/{id}
+ *        POST /api/v1/widget-group
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -74,7 +75,7 @@ public class WidgetGroupResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular widget-group by its id")
-    @Path(Constants.API_V1_VERSION + "/widget-group/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/widget-group/{id}")
     public Response deleteWidgetGroup(@PathParam("id") final long id) throws MetaStoreException {
         try {
             widgetGroupDao.delete(id);
@@ -100,12 +101,14 @@ public class WidgetGroupResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing widget-group")
-    @Path(Constants.API_V1_VERSION + "/widget-group/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/widget-group/{id}")
     public Response updateWidgetGroup(@PathParam("id") final long id,
                                  @Valid @NotNull final WidgetGroup widgetGroup)
             throws MetaStoreException {
         try {
-            widgetGroupDao.update(widgetGroup);
+            final WidgetGroup curWidgetGroup = widgetGroupDao.find(id);
+            ResourceUtil.updateEntityParams(curWidgetGroup, widgetGroup, WidgetGroup.class);
+            widgetGroupDao.update(curWidgetGroup);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -127,7 +130,7 @@ public class WidgetGroupResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new widget-group")
-    @Path(Constants.API_V1_VERSION + "/widget-group/create")
+    @Path(Constants.API_V1_VERSION + "/widget-group")
     public WidgetGroup createSubscriptionChannel(@Valid @NotNull final WidgetGroup widgetGroup)
             throws MetaStoreException {
         try {

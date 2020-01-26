@@ -1,9 +1,11 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
+import com.expedia.www.doppler.metastore.commons.detail_entities.TeamDetail;
 import com.expedia.www.doppler.metastore.commons.entities.Team;
-import com.ab.example.metastore.service.dao.TeamDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.TeamDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +27,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/teams
  *        GET /api/v1/team/{id}
- *        DELETE /api/v1/team/{id}/delete
- *        PUT /api/v1/team/{id}/update
- *        POST /api/v1/team/create
+ *        DELETE /api/v1/team/{id}
+ *        PUT /api/v1/team/{id}
+ *        POST /api/v1/team
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -75,9 +77,9 @@ public class TeamResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Fetch a particular team by its id")
     @Path(Constants.API_V1_VERSION + "/team/{id}")
-    public Team getTeamById(@PathParam("id") final long id) throws MetaStoreException {
+    public TeamDetail getTeamById(@PathParam("id") final long id) throws MetaStoreException {
         try {
-            return teamDao.find(id);
+            return new TeamDetail(teamDao.find(id));
         }catch (Exception e)
         {
             LOGGER.error("failed to fetch team by id: {} due to exception.", id, e);
@@ -97,7 +99,7 @@ public class TeamResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular team by its id")
-    @Path(Constants.API_V1_VERSION + "/team/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/team/{id}")
     public Response deleteTeam(@PathParam("id") final long id) throws MetaStoreException {
         try {
             teamDao.delete(id);
@@ -123,12 +125,14 @@ public class TeamResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing team")
-    @Path(Constants.API_V1_VERSION + "/team/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/team/{id}")
     public Response updateTeam(@PathParam("id") final long id,
                                               @Valid @NotNull final Team team)
             throws MetaStoreException {
         try {
-            teamDao.update(team);
+            final Team curTeam = teamDao.find(id);
+            ResourceUtil.updateEntityParams(curTeam, team, Team.class);
+            teamDao.update(curTeam);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -150,7 +154,7 @@ public class TeamResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new team")
-    @Path(Constants.API_V1_VERSION + "/team/create")
+    @Path(Constants.API_V1_VERSION + "/team")
     public Team createTeam(@Valid @NotNull final Team team)
             throws MetaStoreException {
         try {

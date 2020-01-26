@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.AlertInstance;
-import com.ab.example.metastore.service.dao.AlertInstanceDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.AlertInstanceDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -74,7 +75,7 @@ public class AlertInstanceResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular alert instance by its id")
-    @Path(Constants.API_V1_VERSION + "/alert/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/alert/{id}")
     public Response deleteAlert(@PathParam("id") final long id) throws MetaStoreException {
         try {
             alertInstanceDao.delete(id);
@@ -100,12 +101,14 @@ public class AlertInstanceResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing alert instance")
-    @Path(Constants.API_V1_VERSION + "/alert/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/alert/{id}")
     public Response updateAlert(@PathParam("id") final long id,
                                         @Valid @NotNull final AlertInstance alertInstance)
             throws MetaStoreException {
         try {
-            alertInstanceDao.update(alertInstance);
+            final AlertInstance curInstance = alertInstanceDao.find(id);
+            ResourceUtil.updateEntityParams(curInstance, alertInstance, AlertInstance.class);
+            alertInstanceDao.update(curInstance);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -127,7 +130,7 @@ public class AlertInstanceResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new alert instance")
-    @Path(Constants.API_V1_VERSION + "/alert/create")
+    @Path(Constants.API_V1_VERSION + "/alert")
     public AlertInstance createAlert(@Valid @NotNull final AlertInstance alertInstance)
             throws MetaStoreException {
         try {

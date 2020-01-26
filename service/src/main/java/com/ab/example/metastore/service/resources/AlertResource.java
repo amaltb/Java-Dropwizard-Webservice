@@ -1,12 +1,13 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
 import com.expedia.www.doppler.metastore.commons.entities.Alert;
 import com.expedia.www.doppler.metastore.commons.list_entities.AlertLight;
-import com.ab.example.metastore.service.dao.AlertDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.AlertDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,9 +30,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/alert-definitions
  *        GET /api/v1/alert-definition/{id}
- *        DELETE /api/v1/alert-definition/{id}/delete
- *        PUT /api/v1/alert-definition/{id}/update
- *        POST /api/v1/alert-definition/create
+ *        DELETE /api/v1/alert-definition/{id}
+ *        PUT /api/v1/alert-definition/{id}
+ *        POST /api/v1/alert-definition
  */
 @SuppressWarnings({"PMD.PreserveStackTrace", "PMD.PrematureDeclaration", "PMD.UnusedPrivateField", "PMD.SingularField",
         "PMD.UnusedLocalVariable"})
@@ -108,7 +109,7 @@ public class AlertResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular alert definition with its id")
-    @Path(Constants.API_V1_VERSION + "/alert-definition/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/alert-definition/{id}")
     public Response deleteAlertDefinition(@PathParam("id") final long id) throws MetaStoreException {
         try {
             // fetching the alert to be deleted
@@ -150,7 +151,7 @@ public class AlertResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing alert definition")
-    @Path(Constants.API_V1_VERSION + "/alert-definition/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/alert-definition/{id}")
     public Response updateAlertDefinition(@PathParam("id") final long id, @Valid @NotNull final Alert alertDefinition)
             throws MetaStoreException {
         try {
@@ -165,7 +166,8 @@ public class AlertResource {
             {
                 /* updating from meta-store only if the search store update was successful
                 to avoid any data inconsistency problems. */
-                alertDao.update(alertDefinition);
+                ResourceUtil.updateEntityParams(oldAlert, alertDefinition, Alert.class);
+                alertDao.update(oldAlert);
                 return Response.status(HttpStatus.SC_NO_CONTENT).build();
             }
             else
@@ -192,7 +194,7 @@ public class AlertResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new alert definition")
-    @Path(Constants.API_V1_VERSION + "/alert-definition/create")
+    @Path(Constants.API_V1_VERSION + "/alert-definition")
     public Alert createAlertDefinition(@Valid @NotNull final Alert alertDefinition)
             throws MetaStoreException {
         try {

@@ -1,10 +1,11 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Component;
-import com.ab.example.metastore.service.dao.ComponentDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.dao.ComponentDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
 import com.expedia.www.doppler.metastore.commons.list_entities.ComponentLight;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,9 +27,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/widget-components
  *        GET /api/v1/widget-component/{id}
- *        DELETE /api/v1/widget-component/{id}/delete
- *        PUT /api/v1/widget-component/{id}/update
- *        POST /api/v1/widget-component/create
+ *        DELETE /api/v1/widget-component/{id}
+ *        PUT /api/v1/widget-component/{id}
+ *        POST /api/v1/widget-component
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -99,7 +100,7 @@ public class ComponentResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular widget component by its id")
-    @Path(Constants.API_V1_VERSION + "/widget-component/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/widget-component/{id}")
     public Response deleteWidgetComponent(@PathParam("id") final long id) throws MetaStoreException {
         try {
             componentDao.delete(id);
@@ -125,12 +126,14 @@ public class ComponentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing widget component")
-    @Path(Constants.API_V1_VERSION + "/widget-component/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/widget-component/{id}")
     public Response updateWidgetComponent(@PathParam("id") final long id,
                                     @Valid @NotNull final Component component)
             throws MetaStoreException {
         try {
-            componentDao.update(component);
+            final Component curComponent = componentDao.find(id);
+            ResourceUtil.updateEntityParams(curComponent, component, Component.class);
+            componentDao.update(curComponent);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -152,7 +155,7 @@ public class ComponentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new widget component")
-    @Path(Constants.API_V1_VERSION + "/widget-component/create")
+    @Path(Constants.API_V1_VERSION + "/widget-component")
     public Component createAlertType(@Valid @NotNull final Component component)
             throws MetaStoreException {
         try {

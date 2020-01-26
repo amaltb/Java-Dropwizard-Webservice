@@ -1,10 +1,10 @@
-package com.ab.example.metastore.service.resources.coarse_grained;
+package com.expedia.www.doppler.metastore.service.resources.coarse_grained;
 
 import com.expedia.www.doppler.metastore.commons.entities.BusinessEntityAttribute;
 import com.expedia.www.doppler.metastore.commons.list_entities.TopicLight;
-import com.ab.example.metastore.service.dao.BusinessEntityAttributeDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.BusinessEntityAttributeDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,9 +26,8 @@ import java.util.Set;
  *
  * HTTP resource for user level coarse grained APIs.
  *
- * paths: GET /api/v1/topic/entity/attributes
- *        GET /api/v1/topic/entity/attributes
- *        GET /api/v1//entity/alert-instances
+ * paths: GET /api/v1/topic/attributes
+ *        GET /api/v1/cluster/topics
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")

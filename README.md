@@ -31,7 +31,6 @@ Keeping the final version of the service here for reference.
  
  ## System APIs
  ![meta-store system APIs](documents/APIs.png)
- ![meta-store system APIs](documents/APIs2.png)
  
  ## Database Design
  ![meta-store ER diagram](documents/DopplerMetadataModel.png)

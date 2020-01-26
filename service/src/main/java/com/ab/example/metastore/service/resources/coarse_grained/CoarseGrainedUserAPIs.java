@@ -1,13 +1,12 @@
-package com.ab.example.metastore.service.resources.coarse_grained;
+package com.expedia.www.doppler.metastore.service.resources.coarse_grained;
 
-import com.ab.example.metastore.service.dao.*;
 import com.expedia.www.doppler.metastore.commons.entities.Alert;
 import com.expedia.www.doppler.metastore.commons.entities.AlertInstance;
 import com.expedia.www.doppler.metastore.commons.entities.Dashboard;
 import com.expedia.www.doppler.metastore.commons.entities.UserProfile;
 import com.expedia.www.doppler.metastore.service.dao.*;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +28,8 @@ import java.util.List;
  *
  * paths: GET /api/v1/user/alerts
  *        GET /api/v1//user/dashboards
- *        GET /api/v1//user/alert-instances
+ *        GET /api/v1/user/profile
+ *        GET /api/v1//user/alerts/instances
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")

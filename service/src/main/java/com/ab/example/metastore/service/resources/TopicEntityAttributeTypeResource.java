@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.TopicEntityAttributeType;
-import com.ab.example.metastore.service.dao.TopicEntityAttributeTypeDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.TopicEntityAttributeTypeDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/topic-entity-attribute-types
  *        GET /api/v1/topic-entity-attribute-type/{id}
- *        DELETE /api/v1/topic-entity-attribute-type/{id}/delete
- *        PUT /api/v1/topic-entity-attribute-type/{id}/update
- *        POST /api/v1/topic-entity-attribute-type/create
+ *        DELETE /api/v1/topic-entity-attribute-type/{id}
+ *        PUT /api/v1/topic-entity-attribute-type/{id}
+ *        POST /api/v1/topic-entity-attribute-type
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -97,7 +98,7 @@ public class TopicEntityAttributeTypeResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular topic-entity-attribute-type by its id")
-    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/{id}")
     public Response deleteTopicEntityAttributeType(@PathParam("id") final long id) throws MetaStoreException {
         try {
             topicEntityAttributeTypeDao.delete(id);
@@ -123,12 +124,15 @@ public class TopicEntityAttributeTypeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing topic-entity-attribute-type")
-    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/{id}")
     public Response updateTopicEntityAttributeType(@PathParam("id") final long id,
                                                @Valid @NotNull final TopicEntityAttributeType topicEntityAttributeType)
             throws MetaStoreException {
         try {
-            topicEntityAttributeTypeDao.update(topicEntityAttributeType);
+            final TopicEntityAttributeType curTopicEntityAttributeType = topicEntityAttributeTypeDao.find(id);
+            ResourceUtil.updateEntityParams(curTopicEntityAttributeType, topicEntityAttributeType,
+                    TopicEntityAttributeType.class);
+            topicEntityAttributeTypeDao.update(curTopicEntityAttributeType);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -150,7 +154,7 @@ public class TopicEntityAttributeTypeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new topic-entity-attribute-type")
-    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/create")
+    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type")
     public TopicEntityAttributeType createTopicEntityAttribute(@Valid @NotNull final TopicEntityAttributeType topicEntityAttributeType)
             throws MetaStoreException {
         try {

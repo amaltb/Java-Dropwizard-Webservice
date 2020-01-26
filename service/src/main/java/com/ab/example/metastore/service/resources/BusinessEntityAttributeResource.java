@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.BusinessEntityAttribute;
-import com.ab.example.metastore.service.dao.BusinessEntityAttributeDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.BusinessEntityAttributeDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +26,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/business-entity-attributes
  *        GET /api/v1/business-entity-attribute/{id}
- *        DELETE /api/v1/business-entity-attribute/{id}/delete
- *        PUT /api/v1/business-entity-attribute/{id}/update
- *        POST /api/v1/business-entity-attribute/create
+ *        DELETE /api/v1/business-entity-attribute/{id}
+ *        PUT /api/v1/business-entity-attribute/{id}
+ *        POST /api/v1/business-entity-attribute
  */
 @SuppressWarnings({"PMD.PreserveStackTrace", "PMD.PrematureDeclaration", "PMD.UnusedPrivateField", "PMD.SingularField",
         "PMD.UnusedLocalVariable"})
@@ -81,7 +82,7 @@ public class BusinessEntityAttributeResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular business-entity-attribute by its id")
-    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/{id}")
     public Response deleteBusinessEntityAttribute(@PathParam("id") final long id) throws MetaStoreException {
         try {
 
@@ -125,7 +126,7 @@ public class BusinessEntityAttributeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing business-entity-attribute")
-    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/{id}")
     public Response updateBusinessEntityAttribute(@PathParam("id") final long id,
                                                @Valid @NotNull final BusinessEntityAttribute businessEntityAttribute)
             throws MetaStoreException {
@@ -142,7 +143,8 @@ public class BusinessEntityAttributeResource {
             {
                 /* updating from meta-store only if the search store update was successful
                 to avoid any data inconsistency problems. */
-                businessEntityAttributeDao.update(businessEntityAttribute);
+                ResourceUtil.updateEntityParams(oldBusinessEntityAttribute, businessEntityAttribute, BusinessEntityAttribute.class);
+                businessEntityAttributeDao.update(oldBusinessEntityAttribute);
                 return Response.status(HttpStatus.SC_NO_CONTENT).build();
             }
             else
@@ -169,7 +171,7 @@ public class BusinessEntityAttributeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new business-entity-attribute")
-    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/create")
+    @Path(Constants.API_V1_VERSION + "/business-entity-attribute")
     public BusinessEntityAttribute createBusinessEntityAttribute(@Valid @NotNull final BusinessEntityAttribute businessEntityAttribute)
             throws MetaStoreException {
         try {
