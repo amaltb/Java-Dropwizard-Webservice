@@ -1,4 +1,4 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.gson.Gson;

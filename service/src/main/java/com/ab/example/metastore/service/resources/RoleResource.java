@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Role;
-import com.ab.example.metastore.service.dao.RoleDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.RoleDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/roles
  *        GET /api/v1/role/{id}
- *        DELETE /api/v1/role/{id}/delete
- *        PUT /api/v1/role/{id}/update
- *        POST /api/v1/role/create
+ *        DELETE /api/v1/role/{id}
+ *        PUT /api/v1/role/{id}
+ *        POST /api/v1/role
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -96,7 +97,7 @@ public class RoleResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular role by its id")
-    @Path(Constants.API_V1_VERSION + "/role/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/role/{id}")
     public Response deleteRole(@PathParam("id") final long id) throws MetaStoreException {
         try {
             roleDao.delete(id);
@@ -122,12 +123,14 @@ public class RoleResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing role")
-    @Path(Constants.API_V1_VERSION + "/role/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/role/{id}")
     public Response updateRole(@PathParam("id") final long id,
                                      @Valid @NotNull final Role role)
             throws MetaStoreException {
         try {
-            roleDao.update(role);
+            final Role curRole = roleDao.find(id);
+            ResourceUtil.updateEntityParams(curRole, role, Role.class);
+            roleDao.update(curRole);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -149,7 +152,7 @@ public class RoleResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new role")
-    @Path(Constants.API_V1_VERSION + "/role/create")
+    @Path(Constants.API_V1_VERSION + "/role")
     public Role createRole(@Valid @NotNull final Role role)
             throws MetaStoreException {
         try {

@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.AlertType;
-import com.ab.example.metastore.service.dao.AlertTypeDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.AlertTypeDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/alert-types
  *        GET /api/v1/alert-type/{id}
- *        DELETE /api/v1/alert-type/{id}/delete
- *        PUT /api/v1/alert-type/{id}/update
- *        POST /api/v1/alert-type/create
+ *        DELETE /api/v1/alert-type/{id}
+ *        PUT /api/v1/alert-type/{id}
+ *        POST /api/v1/alert-type
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -99,7 +100,7 @@ public class AlertTypeResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular alert type by its id")
-    @Path(Constants.API_V1_VERSION + "/alert-type/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/alert-type/{id}")
     public Response deleteAlertType(@PathParam("id") final long id) throws MetaStoreException {
         try {
             alertTypeDao.delete(id);
@@ -125,12 +126,14 @@ public class AlertTypeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing alert type")
-    @Path(Constants.API_V1_VERSION + "/alert-type/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/alert-type/{id}")
     public Response updateAlertType(@PathParam("id") final long id,
                                         @Valid @NotNull final AlertType alertType)
             throws MetaStoreException {
         try {
-            alertTypeDao.update(alertType);
+            final AlertType curAlertType = alertTypeDao.find(id);
+            ResourceUtil.updateEntityParams(curAlertType, alertType, AlertType.class);
+            alertTypeDao.update(curAlertType);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -152,7 +155,7 @@ public class AlertTypeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new alert type")
-    @Path(Constants.API_V1_VERSION + "/alert-type/create")
+    @Path(Constants.API_V1_VERSION + "/alert-type")
     public AlertType createAlertType(@Valid @NotNull final AlertType alertType)
             throws MetaStoreException {
         try {

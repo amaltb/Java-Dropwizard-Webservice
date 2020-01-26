@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Metric;
-import com.ab.example.metastore.service.dao.MetricDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.MetricDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/metrics
  *        GET /api/v1/metric/{id}
- *        DELETE /api/v1/metric/{id}/delete
- *        PUT /api/v1/metric/{id}/update
- *        POST /api/v1/metric/create
+ *        DELETE /api/v1/metric/{id}
+ *        PUT /api/v1/metric/{id}
+ *        POST /api/v1/metric
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -96,7 +97,7 @@ public class MetricResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular metric by its id")
-    @Path(Constants.API_V1_VERSION + "/metric/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/metric/{id}")
     public Response deleteMetric(@PathParam("id") final long id) throws MetaStoreException {
         try {
             metricDao.delete(id);
@@ -122,12 +123,14 @@ public class MetricResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing metric")
-    @Path(Constants.API_V1_VERSION + "/metric/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/metric/{id}")
     public Response updateMetric(@PathParam("id") final long id,
                                       @Valid @NotNull final Metric metric)
             throws MetaStoreException {
         try {
-            metricDao.update(metric);
+            final Metric curMetric = metricDao.find(id);
+            ResourceUtil.updateEntityParams(curMetric, metric, Metric.class);
+            metricDao.update(curMetric);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -149,7 +152,7 @@ public class MetricResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new metric")
-    @Path(Constants.API_V1_VERSION + "/metric/create")
+    @Path(Constants.API_V1_VERSION + "/metric")
     public Metric createMetric(@Valid @NotNull final Metric metric)
             throws MetaStoreException {
         try {

@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.SubscriptionChannel;
-import com.ab.example.metastore.service.dao.SubscriptionChannelDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.SubscriptionChannelDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,9 +25,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/subscription-channels
  *        GET /api/v1/subscription-channel/{id}
- *        DELETE /api/v1/subscription-channel/{id}/delete
- *        PUT /api/v1/subscription-channel/{id}/update
- *        POST /api/v1/subscription-channel/create
+ *        DELETE /api/v1/subscription-channel/{id}
+ *        PUT /api/v1/subscription-channel/{id}
+ *        POST /api/v1/subscription-channel
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -74,7 +75,7 @@ public class SubscriptionChannelResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular subscription channel by its id")
-    @Path(Constants.API_V1_VERSION + "/subscription-channel/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/subscription-channel/{id}")
     public Response deleteSubscriptionChannel(@PathParam("id") final long id) throws MetaStoreException {
         try {
             subscriptionChannelDao.delete(id);
@@ -100,12 +101,14 @@ public class SubscriptionChannelResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing subscription channel")
-    @Path(Constants.API_V1_VERSION + "/subscription-channel/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/subscription-channel/{id}")
     public Response updateSubscriptionChannel(@PathParam("id") final long id,
                                         @Valid @NotNull final SubscriptionChannel subscriptionChannel)
             throws MetaStoreException {
         try {
-            subscriptionChannelDao.update(subscriptionChannel);
+            final SubscriptionChannel curSubscriptionChannel = subscriptionChannelDao.find(id);
+            ResourceUtil.updateEntityParams(curSubscriptionChannel, subscriptionChannel, SubscriptionChannel.class);
+            subscriptionChannelDao.update(curSubscriptionChannel);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -127,7 +130,7 @@ public class SubscriptionChannelResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new subscription channel")
-    @Path(Constants.API_V1_VERSION + "/subscription-channel/create")
+    @Path(Constants.API_V1_VERSION + "/subscription-channel")
     public SubscriptionChannel createSubscriptionChannel(@Valid @NotNull final SubscriptionChannel subscriptionChannel)
             throws MetaStoreException {
         try {

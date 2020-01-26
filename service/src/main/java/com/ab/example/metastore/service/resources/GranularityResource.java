@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Granularity;
-import com.ab.example.metastore.service.dao.GranularityDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.GranularityDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/granularities
  *        GET /api/v1/granularity/{id}
- *        DELETE /api/v1/granularity/{id}/delete
- *        PUT /api/v1/granularity/{id}/update
- *        POST /api/v1/granularity/create
+ *        DELETE /api/v1/granularity/{id}
+ *        PUT /api/v1/granularity/{id}
+ *        POST /api/v1/granularity
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -96,7 +97,7 @@ public class GranularityResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular granularity by its id")
-    @Path(Constants.API_V1_VERSION + "/granularity/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/granularity/{id}")
     public Response deleteGranularity(@PathParam("id") final long id) throws MetaStoreException {
         try {
             granularityDao.delete(id);
@@ -122,12 +123,14 @@ public class GranularityResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing granularity")
-    @Path(Constants.API_V1_VERSION + "/granularity/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/granularity/{id}")
     public Response updateGranularity(@PathParam("id") final long id,
                                           @Valid @NotNull final Granularity granularity)
             throws MetaStoreException {
         try {
-            granularityDao.update(granularity);
+            final Granularity curGranularity = granularityDao.find(id);
+            ResourceUtil.updateEntityParams(curGranularity, granularity, Granularity.class);
+            granularityDao.update(curGranularity);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -149,7 +152,7 @@ public class GranularityResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new granularity")
-    @Path(Constants.API_V1_VERSION + "/granularity/create")
+    @Path(Constants.API_V1_VERSION + "/granularity")
     public Granularity createGranularity(@Valid @NotNull final Granularity granularity)
             throws MetaStoreException {
         try {

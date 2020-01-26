@@ -1,10 +1,12 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
+import com.expedia.www.doppler.metastore.commons.detail_entities.UserProfileDetail;
 import com.expedia.www.doppler.metastore.commons.entities.UserProfile;
-import com.ab.example.metastore.service.dao.UserProfileDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
 import com.expedia.www.doppler.metastore.commons.list_entities.UserProfileLight;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.UserProfileDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,16 +28,16 @@ import java.util.List;
  *
  * paths: GET /api/v1/user-profiles
  *        GET /api/v1/user-profile/{id}
- *        DELETE /api/v1/user-profile/{id}/delete
- *        PUT /api/v1/user-profile/{id}/update
- *        POST /api/v1/user-profile/create
+ *        DELETE /api/v1/user-profile/{id}
+ *        PUT /api/v1/user-profile/{id}
+ *        POST /api/v1/user-profile
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
 @Api("UserProfile")
 public class UserProfileResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileResource.class);
 
     private final UserProfileDao userProfileDao;
 
@@ -79,9 +81,9 @@ public class UserProfileResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Fetch a particular user-profile by its id")
     @Path(Constants.API_V1_VERSION + "/user-profile/{id}")
-    public UserProfile getUserProfileById(@PathParam("id") final long id) throws MetaStoreException {
+    public UserProfileDetail getUserProfileById(@PathParam("id") final long id) throws MetaStoreException {
         try {
-            return userProfileDao.find(id);
+            return new UserProfileDetail(userProfileDao.find(id));
         }catch (Exception e)
         {
             LOGGER.error("failed to fetch user-profile by id: {} due to exception.", id, e);
@@ -101,7 +103,7 @@ public class UserProfileResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular user-profile by its id")
-    @Path(Constants.API_V1_VERSION + "/user-profile/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/user-profile/{id}")
     public Response deleteUserProfile(@PathParam("id") final long id) throws MetaStoreException {
         try {
             userProfileDao.delete(id);
@@ -127,12 +129,14 @@ public class UserProfileResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing user-profile")
-    @Path(Constants.API_V1_VERSION + "/user-profile/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/user-profile/{id}")
     public Response updateUserProfile(@PathParam("id") final long id,
                                @Valid @NotNull final UserProfile userProfile)
             throws MetaStoreException {
         try {
-            userProfileDao.update(userProfile);
+            final UserProfile curUserProfile = userProfileDao.find(id);
+            ResourceUtil.updateEntityParams(curUserProfile, userProfile, UserProfile.class);
+            userProfileDao.update(curUserProfile);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -154,7 +158,7 @@ public class UserProfileResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new user-profile")
-    @Path(Constants.API_V1_VERSION + "/user-profile/create")
+    @Path(Constants.API_V1_VERSION + "/user-profile")
     public UserProfile createUserProfile(@Valid @NotNull final UserProfile userProfile)
             throws MetaStoreException {
         try {

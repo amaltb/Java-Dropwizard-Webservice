@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Permission;
-import com.ab.example.metastore.service.dao.PermissionDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.PermissionDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/permissions
  *        GET /api/v1/permission/{id}
- *        DELETE /api/v1/permission/{id}/delete
- *        PUT /api/v1/permission/{id}/update
- *        POST /api/v1/permission/create
+ *        DELETE /api/v1/permission/{id}
+ *        PUT /api/v1/permission/{id}
+ *        POST /api/v1/permission
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -96,7 +97,7 @@ public class PermissionResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular permission by its id")
-    @Path(Constants.API_V1_VERSION + "/permission/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/permission/{id}")
     public Response deletePermission(@PathParam("id") final long id) throws MetaStoreException {
         try {
             permissionDao.delete(id);
@@ -122,12 +123,14 @@ public class PermissionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing permission")
-    @Path(Constants.API_V1_VERSION + "/permission/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/permission/{id}")
     public Response updatePermission(@PathParam("id") final long id,
                                 @Valid @NotNull final Permission permission)
             throws MetaStoreException {
         try {
-            permissionDao.update(permission);
+            final Permission curPermission = permissionDao.find(id);
+            ResourceUtil.updateEntityParams(curPermission, permission, Permission.class);
+            permissionDao.update(curPermission);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -149,7 +152,7 @@ public class PermissionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new permission")
-    @Path(Constants.API_V1_VERSION + "/permission/create")
+    @Path(Constants.API_V1_VERSION + "/permission")
     public Permission createPermission(@Valid @NotNull final Permission permission)
             throws MetaStoreException {
         try {

@@ -1,10 +1,11 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Topic;
 import com.expedia.www.doppler.metastore.commons.list_entities.TopicLight;
-import com.ab.example.metastore.service.dao.TopicDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.TopicDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,9 +28,9 @@ import java.util.List;
  * paths: GET /api/v1/topics/all
  *        GET /api/v1/topic/{id}
  *        GET /api/v1/topics
- *        DELETE /api/v1/topic/{id}/delete
- *        PUT /api/v1/topic/{id}/update
- *        POST /api/v1/topic/create
+ *        DELETE /api/v1/topic/{id}
+ *        PUT /api/v1/topic/{id}
+ *        POST /api/v1/topic
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -53,7 +54,7 @@ public class TopicResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Fetch all topics in meta-store")
-    @Path(Constants.API_V1_VERSION + "/topics/all")
+    @Path(Constants.API_V1_VERSION + "/topics")
     public List<TopicLight> getAllTopics() throws MetaStoreException {
         try{
             return topicDao.findAll();
@@ -97,7 +98,7 @@ public class TopicResource {
      */
     @GET
     @UnitOfWork
-    @Path(Constants.API_V1_VERSION + "/topics")
+    @Path(Constants.API_V1_VERSION + "/topics/by-name")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("api to fetch all topics with a given topic name.")
     public List<Topic> getTopicsByName(@Valid @NotNull @HeaderParam("topic_name") final String topic_name)
@@ -123,7 +124,7 @@ public class TopicResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular topic by its id")
-    @Path(Constants.API_V1_VERSION + "/topic/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/topic/{id}")
     public Response deleteTopic(@PathParam("id") final long id) throws MetaStoreException {
         try {
             topicDao.delete(id);
@@ -149,12 +150,14 @@ public class TopicResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing topic")
-    @Path(Constants.API_V1_VERSION + "/topic/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/topic/{id}")
     public Response updateTopic(@PathParam("id") final long id,
                                  @Valid @NotNull final Topic topic)
             throws MetaStoreException {
         try {
-            topicDao.update(topic);
+            final Topic curTopic = topicDao.find(id);
+            ResourceUtil.updateEntityParams(curTopic, topic, Topic.class);
+            topicDao.update(curTopic);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -176,7 +179,7 @@ public class TopicResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new topic")
-    @Path(Constants.API_V1_VERSION + "/topic/create")
+    @Path(Constants.API_V1_VERSION + "/topic")
     public Topic createTopic(@Valid @NotNull final Topic topic)
             throws MetaStoreException {
         try {

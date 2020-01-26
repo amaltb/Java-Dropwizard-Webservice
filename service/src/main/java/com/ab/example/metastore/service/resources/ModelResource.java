@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Model;
-import com.ab.example.metastore.service.dao.ModelDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.ModelDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/models
  *        GET /api/v1/model/{id}
- *        DELETE /api/v1/model/{id}/delete
- *        PUT /api/v1/model/{id}/update
- *        POST /api/v1/model/create
+ *        DELETE /api/v1/model/{id}
+ *        PUT /api/v1/model/{id}
+ *        POST /api/v1/model
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -96,7 +97,7 @@ public class ModelResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular model by its id")
-    @Path(Constants.API_V1_VERSION + "/model/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/model/{id}")
     public Response deleteModel(@PathParam("id") final long id) throws MetaStoreException {
         try {
             modelDao.delete(id);
@@ -122,12 +123,14 @@ public class ModelResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing model")
-    @Path(Constants.API_V1_VERSION + "/model/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/model/{id}")
     public Response updateModel(@PathParam("id") final long id,
                                  @Valid @NotNull final Model model)
             throws MetaStoreException {
         try {
-            modelDao.update(model);
+            final Model curModel = modelDao.find(id);
+            ResourceUtil.updateEntityParams(curModel, model, Model.class);
+            modelDao.update(curModel);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -149,7 +152,7 @@ public class ModelResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new model")
-    @Path(Constants.API_V1_VERSION + "/model/create")
+    @Path(Constants.API_V1_VERSION + "/model")
     public Model createModel(@Valid @NotNull final Model model)
             throws MetaStoreException {
         try {

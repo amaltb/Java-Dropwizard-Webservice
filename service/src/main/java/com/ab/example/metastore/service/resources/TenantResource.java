@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Tenant;
-import com.ab.example.metastore.service.dao.TenantDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.TenantDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/tenants
  *        GET /api/v1/tenant/{id}
- *        DELETE /api/v1/tenant/{id}/delete
- *        PUT /api/v1/tenant/{id}/update
- *        POST /api/v1/tenant/create
+ *        DELETE /api/v1/tenant/{id}
+ *        PUT /api/v1/tenant/{id}
+ *        POST /api/v1/tenant
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -97,7 +98,7 @@ public class TenantResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular tenant by its id")
-    @Path(Constants.API_V1_VERSION + "/tenant/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/tenant/{id}")
     public Response deleteTenant(@PathParam("id") final long id) throws MetaStoreException {
         try {
             tenantDao.delete(id);
@@ -123,12 +124,14 @@ public class TenantResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing tenant")
-    @Path(Constants.API_V1_VERSION + "/tenant/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/tenant/{id}")
     public Response updateTenant(@PathParam("id") final long id,
                                @Valid @NotNull final Tenant tenant)
             throws MetaStoreException {
         try {
-            tenantDao.update(tenant);
+            final Tenant curTenant = tenantDao.find(id);
+            ResourceUtil.updateEntityParams(curTenant, tenant, Tenant.class);
+            tenantDao.update(curTenant);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -150,7 +153,7 @@ public class TenantResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new tenant")
-    @Path(Constants.API_V1_VERSION + "/tenant/create")
+    @Path(Constants.API_V1_VERSION + "/tenant")
     public Tenant createTenant(@Valid @NotNull final Tenant tenant)
             throws MetaStoreException {
         try {

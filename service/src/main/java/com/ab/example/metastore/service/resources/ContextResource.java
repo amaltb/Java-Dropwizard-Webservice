@@ -1,10 +1,11 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.Context;
 import com.expedia.www.doppler.metastore.commons.list_entities.ContextLight;
-import com.ab.example.metastore.service.dao.ContextDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.ContextDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,9 +27,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/contexts
  *        GET /api/v1/context/{id}
- *        DELETE /api/v1/context/{id}/delete
- *        PUT /api/v1/context/{id}/update
- *        POST /api/v1/context/create
+ *        DELETE /api/v1/context/{id}
+ *        PUT /api/v1/context/{id}
+ *        POST /api/v1/context
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -97,7 +98,7 @@ public class ContextResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular context by its id")
-    @Path(Constants.API_V1_VERSION + "/context/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/context/{id}")
     public Response deleteMetricContext(@PathParam("id") final long id) throws MetaStoreException {
         try {
             contextDao.delete(id);
@@ -123,12 +124,14 @@ public class ContextResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing context")
-    @Path(Constants.API_V1_VERSION + "/context/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/context/{id}")
     public Response updateMetricContext(@PathParam("id") final long id,
                                  @Valid @NotNull final Context metricContext)
             throws MetaStoreException {
         try {
-            contextDao.update(metricContext);
+            final Context curContext = contextDao.find(id);
+            ResourceUtil.updateEntityParams(curContext, metricContext, Context.class);
+            contextDao.update(curContext);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -150,7 +153,7 @@ public class ContextResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new context")
-    @Path(Constants.API_V1_VERSION + "/context/create")
+    @Path(Constants.API_V1_VERSION + "/context")
     public Context createMetricContext(@Valid @NotNull final Context metricContext)
             throws MetaStoreException {
         try {

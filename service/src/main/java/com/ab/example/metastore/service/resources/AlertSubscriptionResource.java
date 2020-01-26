@@ -1,9 +1,10 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 import com.expedia.www.doppler.metastore.commons.entities.AlertSubscription;
-import com.ab.example.metastore.service.dao.AlertSubscriptionDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.AlertSubscriptionDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,9 +25,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/alert-subscriptions
  *        GET /api/v1/alert-subscription/{id}
- *        DELETE /api/v1/alert-subscription/{id}/delete
- *        PUT /api/v1/alert-subscription/{id}/update
- *        POST /api/v1/alert-subscription/create
+ *        DELETE /api/v1/alert-subscription/{id}
+ *        PUT /api/v1/alert-subscription/{id}
+ *        POST /api/v1/alert-subscription
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -74,7 +75,7 @@ public class AlertSubscriptionResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular alert subscription by its id")
-    @Path(Constants.API_V1_VERSION + "/alert-subscription/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/alert-subscription/{id}")
     public Response deleteAlertSubscription(@PathParam("id") final long id) throws MetaStoreException {
         try {
             alertSubscriptionDao.delete(id);
@@ -100,12 +101,14 @@ public class AlertSubscriptionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing alert subscription")
-    @Path(Constants.API_V1_VERSION + "/alert-subscription/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/alert-subscription/{id}")
     public Response updateAlertSubscription(@PathParam("id") final long id,
                                         @Valid @NotNull final AlertSubscription alertSubscription)
             throws MetaStoreException {
         try {
-            alertSubscriptionDao.update(alertSubscription);
+            final AlertSubscription curAlertSubscription = alertSubscriptionDao.find(id);
+            ResourceUtil.updateEntityParams(curAlertSubscription, alertSubscription, AlertSubscription.class);
+            alertSubscriptionDao.update(curAlertSubscription);
             return Response.status(HttpStatus.SC_NO_CONTENT).build();
         }catch (Exception e)
         {
@@ -127,7 +130,7 @@ public class AlertSubscriptionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new alert subscription")
-    @Path(Constants.API_V1_VERSION + "/alert-subscription/create")
+    @Path(Constants.API_V1_VERSION + "/alert-subscription")
     public AlertSubscription createAlertSubscription(@Valid @NotNull final AlertSubscription alertSubscription)
             throws MetaStoreException {
         try {

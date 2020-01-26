@@ -1,11 +1,12 @@
-package com.ab.example.metastore.service.resources;
+package com.expedia.www.doppler.metastore.service.resources;
 
 
 import com.expedia.www.doppler.metastore.commons.entities.Dashboard;
 import com.expedia.www.doppler.metastore.commons.list_entities.DashboardLight;
-import com.ab.example.metastore.service.dao.DashboardDao;
-import com.ab.example.metastore.service.exception.MetaStoreException;
-import com.ab.example.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.dao.DashboardDao;
+import com.expedia.www.doppler.metastore.service.exception.MetaStoreException;
+import com.expedia.www.doppler.metastore.service.util.Constants;
+import com.expedia.www.doppler.metastore.service.util.ResourceUtil;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,9 +29,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/dashboards
  *        GET /api/v1/dashboard/{id}
- *        DELETE /api/v1/dashboard/{id}/delete
- *        PUT /api/v1/dashboard/{id}/update
- *        POST /api/v1/dashboard/create
+ *        DELETE /api/v1/dashboard/{id}
+ *        PUT /api/v1/dashboard/{id}
+ *        POST /api/v1/dashboard
  */
 @SuppressWarnings({"PMD.PreserveStackTrace", "PMD.PrematureDeclaration", "PMD.UnusedPrivateField", "PMD.SingularField",
         "PMD.UnusedLocalVariable"})
@@ -106,7 +107,7 @@ public class DashboardResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular dashboard by its id")
-    @Path(Constants.API_V1_VERSION + "/dashboard/{id}/delete")
+    @Path(Constants.API_V1_VERSION + "/dashboard/{id}")
     public Response deleteDashboard(@PathParam("id") final long id) throws MetaStoreException {
         try {
             // fetching dashboard to be deleted.
@@ -148,7 +149,7 @@ public class DashboardResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing dashboard")
-    @Path(Constants.API_V1_VERSION + "/dashboard/{id}/update")
+    @Path(Constants.API_V1_VERSION + "/dashboard/{id}")
     public Response updateDashboard(@PathParam("id") final long id,
                                           @Valid @NotNull final Dashboard dashboard)
             throws MetaStoreException {
@@ -164,7 +165,8 @@ public class DashboardResource {
             {
                 /* updating from meta-store only if the search store update was successful
                 to avoid any data inconsistency problems. */
-                dashboardDao.update(dashboard);
+                ResourceUtil.updateEntityParams(oldDashboard, dashboard, Dashboard.class);
+                dashboardDao.update(oldDashboard);
                 return Response.status(HttpStatus.SC_NO_CONTENT).build();
             }
             else
@@ -191,7 +193,7 @@ public class DashboardResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new dashboard")
-    @Path(Constants.API_V1_VERSION + "/dashboard/create")
+    @Path(Constants.API_V1_VERSION + "/dashboard")
     public Dashboard createDashboard(@Valid @NotNull final Dashboard dashboard)
             throws MetaStoreException {
         try {
