@@ -27,9 +27,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/widget-components
  *        GET /api/v1/widget-component/{id}
- *        DELETE /api/v1/widget-component/{id}
- *        PUT /api/v1/widget-component/{id}
- *        POST /api/v1/widget-component
+ *        DELETE /api/v1/widget-component/{id}/delete
+ *        PUT /api/v1/widget-component/{id}/update
+ *        POST /api/v1/widget-component/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -100,7 +100,7 @@ public class ComponentResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular widget component by its id")
-    @Path(Constants.API_V1_VERSION + "/widget-component/{id}")
+    @Path(Constants.API_V1_VERSION + "/widget-component/{id}/delete")
     public Response deleteWidgetComponent(@PathParam("id") final long id) throws MetaStoreException {
         try {
             componentDao.delete(id);
@@ -126,7 +126,7 @@ public class ComponentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing widget component")
-    @Path(Constants.API_V1_VERSION + "/widget-component/{id}")
+    @Path(Constants.API_V1_VERSION + "/widget-component/{id}/update")
     public Response updateWidgetComponent(@PathParam("id") final long id,
                                     @Valid @NotNull final Component component)
             throws MetaStoreException {
@@ -155,7 +155,7 @@ public class ComponentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new widget component")
-    @Path(Constants.API_V1_VERSION + "/widget-component")
+    @Path(Constants.API_V1_VERSION + "/widget-component/create")
     public Component createAlertType(@Valid @NotNull final Component component)
             throws MetaStoreException {
         try {

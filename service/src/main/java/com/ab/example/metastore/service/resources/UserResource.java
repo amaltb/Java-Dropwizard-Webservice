@@ -30,9 +30,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/users
  *        GET /api/v1/user/{id}
- *        DELETE /api/v1/user/{id}
- *        PUT /api/v1/user/{id}
- *        POST /api/v1/user
+ *        DELETE /api/v1/user/{id}/delete
+ *        PUT /api/v1/user/{id}/update
+ *        POST /api/v1/user/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -141,7 +141,7 @@ public class UserResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular user by its id")
-    @Path(Constants.API_V1_VERSION + "/user/{id}")
+    @Path(Constants.API_V1_VERSION + "/user/{id}/delete")
     public Response deleteUser(@PathParam("id") final long id) throws MetaStoreException {
         try {
             userDao.delete(id);
@@ -167,7 +167,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing user")
-    @Path(Constants.API_V1_VERSION + "/user/{id}")
+    @Path(Constants.API_V1_VERSION + "/user/{id}/update")
     public Response updateUser(@PathParam("id") final long id,
                                @Valid @NotNull final User user)
             throws MetaStoreException {
@@ -197,7 +197,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new user")
-    @Path(Constants.API_V1_VERSION + "/user")
+    @Path(Constants.API_V1_VERSION + "/user/create")
     public User createUser(@Valid @NotNull final User user)
             throws MetaStoreException {
         try {

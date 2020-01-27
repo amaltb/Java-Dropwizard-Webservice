@@ -27,9 +27,9 @@ import java.util.List;
  * paths: GET /api/v1/cluster/{id}
  *        GET /api/v1/clusters/by-name
  *        GET /api/v1/clusters/by-type
- *        DELETE /api/v1/cluster/{id}
- *        PUT /api/v1/cluster/{id}
- *        POST /api/v1/cluster
+ *        DELETE /api/v1/cluster/{id}/delete
+ *        PUT /api/v1/cluster/{id}/update
+ *        POST /api/v1/cluster/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -125,7 +125,7 @@ public class ClusterResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular cluster by its id")
-    @Path(Constants.API_V1_VERSION + "/cluster/{id}")
+    @Path(Constants.API_V1_VERSION + "/cluster/{id}/delete")
     public Response deleteCluster(@PathParam("id") final long id) throws MetaStoreException {
         try {
             clusterDao.delete(id);
@@ -151,7 +151,7 @@ public class ClusterResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing cluster")
-    @Path(Constants.API_V1_VERSION + "/cluster/{id}")
+    @Path(Constants.API_V1_VERSION + "/cluster/{id}/update")
     public Response updateCluster(@PathParam("id") final long id,
                                 @Valid @NotNull final Cluster cluster)
             throws MetaStoreException {
@@ -180,7 +180,7 @@ public class ClusterResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new cluster")
-    @Path(Constants.API_V1_VERSION + "/cluster")
+    @Path(Constants.API_V1_VERSION + "/cluster/create")
     public Cluster createCluster(@Valid @NotNull final Cluster cluster)
             throws MetaStoreException {
         try {

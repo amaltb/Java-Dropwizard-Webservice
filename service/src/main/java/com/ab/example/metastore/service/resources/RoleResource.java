@@ -26,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/roles
  *        GET /api/v1/role/{id}
- *        DELETE /api/v1/role/{id}
- *        PUT /api/v1/role/{id}
- *        POST /api/v1/role
+ *        DELETE /api/v1/role/{id}/delete
+ *        PUT /api/v1/role/{id}/update
+ *        POST /api/v1/role/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -97,7 +97,7 @@ public class RoleResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular role by its id")
-    @Path(Constants.API_V1_VERSION + "/role/{id}")
+    @Path(Constants.API_V1_VERSION + "/role/{id}/delete")
     public Response deleteRole(@PathParam("id") final long id) throws MetaStoreException {
         try {
             roleDao.delete(id);
@@ -123,7 +123,7 @@ public class RoleResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing role")
-    @Path(Constants.API_V1_VERSION + "/role/{id}")
+    @Path(Constants.API_V1_VERSION + "/role/{id}/update")
     public Response updateRole(@PathParam("id") final long id,
                                      @Valid @NotNull final Role role)
             throws MetaStoreException {
@@ -152,7 +152,7 @@ public class RoleResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new role")
-    @Path(Constants.API_V1_VERSION + "/role")
+    @Path(Constants.API_V1_VERSION + "/role/create")
     public Role createRole(@Valid @NotNull final Role role)
             throws MetaStoreException {
         try {

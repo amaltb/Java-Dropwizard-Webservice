@@ -25,9 +25,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/widget-groups
  *        GET /api/v1/widget-group/{id}
- *        DELETE /api/v1/widget-group/{id}
- *        PUT /api/v1/widget-group/{id}
- *        POST /api/v1/widget-group
+ *        DELETE /api/v1/widget-group/{id}/delete
+ *        PUT /api/v1/widget-group/{id}/update
+ *        POST /api/v1/widget-group/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -75,7 +75,7 @@ public class WidgetGroupResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular widget-group by its id")
-    @Path(Constants.API_V1_VERSION + "/widget-group/{id}")
+    @Path(Constants.API_V1_VERSION + "/widget-group/{id}/delete")
     public Response deleteWidgetGroup(@PathParam("id") final long id) throws MetaStoreException {
         try {
             widgetGroupDao.delete(id);
@@ -101,7 +101,7 @@ public class WidgetGroupResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing widget-group")
-    @Path(Constants.API_V1_VERSION + "/widget-group/{id}")
+    @Path(Constants.API_V1_VERSION + "/widget-group/{id}/update")
     public Response updateWidgetGroup(@PathParam("id") final long id,
                                  @Valid @NotNull final WidgetGroup widgetGroup)
             throws MetaStoreException {
@@ -130,7 +130,7 @@ public class WidgetGroupResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new widget-group")
-    @Path(Constants.API_V1_VERSION + "/widget-group")
+    @Path(Constants.API_V1_VERSION + "/widget-group/create")
     public WidgetGroup createSubscriptionChannel(@Valid @NotNull final WidgetGroup widgetGroup)
             throws MetaStoreException {
         try {

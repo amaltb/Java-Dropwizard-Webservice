@@ -26,9 +26,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/business-entity-attributes
  *        GET /api/v1/business-entity-attribute/{id}
- *        DELETE /api/v1/business-entity-attribute/{id}
- *        PUT /api/v1/business-entity-attribute/{id}
- *        POST /api/v1/business-entity-attribute
+ *        DELETE /api/v1/business-entity-attribute/{id}/delete
+ *        PUT /api/v1/business-entity-attribute/{id}/update
+ *        POST /api/v1/business-entity-attribute/create
  */
 @SuppressWarnings({"PMD.PreserveStackTrace", "PMD.PrematureDeclaration", "PMD.UnusedPrivateField", "PMD.SingularField",
         "PMD.UnusedLocalVariable"})
@@ -82,7 +82,7 @@ public class BusinessEntityAttributeResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular business-entity-attribute by its id")
-    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/{id}")
+    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/{id}/delete")
     public Response deleteBusinessEntityAttribute(@PathParam("id") final long id) throws MetaStoreException {
         try {
 
@@ -126,7 +126,7 @@ public class BusinessEntityAttributeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing business-entity-attribute")
-    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/{id}")
+    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/{id}/update")
     public Response updateBusinessEntityAttribute(@PathParam("id") final long id,
                                                @Valid @NotNull final BusinessEntityAttribute businessEntityAttribute)
             throws MetaStoreException {
@@ -171,7 +171,7 @@ public class BusinessEntityAttributeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new business-entity-attribute")
-    @Path(Constants.API_V1_VERSION + "/business-entity-attribute")
+    @Path(Constants.API_V1_VERSION + "/business-entity-attribute/create")
     public BusinessEntityAttribute createBusinessEntityAttribute(@Valid @NotNull final BusinessEntityAttribute businessEntityAttribute)
             throws MetaStoreException {
         try {

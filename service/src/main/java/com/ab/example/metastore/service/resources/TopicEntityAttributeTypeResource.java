@@ -26,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/topic-entity-attribute-types
  *        GET /api/v1/topic-entity-attribute-type/{id}
- *        DELETE /api/v1/topic-entity-attribute-type/{id}
- *        PUT /api/v1/topic-entity-attribute-type/{id}
- *        POST /api/v1/topic-entity-attribute-type
+ *        DELETE /api/v1/topic-entity-attribute-type/{id}/delete
+ *        PUT /api/v1/topic-entity-attribute-type/{id}/update
+ *        POST /api/v1/topic-entity-attribute-type/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -98,7 +98,7 @@ public class TopicEntityAttributeTypeResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular topic-entity-attribute-type by its id")
-    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/{id}")
+    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/{id}/delete")
     public Response deleteTopicEntityAttributeType(@PathParam("id") final long id) throws MetaStoreException {
         try {
             topicEntityAttributeTypeDao.delete(id);
@@ -124,7 +124,7 @@ public class TopicEntityAttributeTypeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing topic-entity-attribute-type")
-    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/{id}")
+    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/{id}/update")
     public Response updateTopicEntityAttributeType(@PathParam("id") final long id,
                                                @Valid @NotNull final TopicEntityAttributeType topicEntityAttributeType)
             throws MetaStoreException {
@@ -154,7 +154,7 @@ public class TopicEntityAttributeTypeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new topic-entity-attribute-type")
-    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type")
+    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute-type/create")
     public TopicEntityAttributeType createTopicEntityAttribute(@Valid @NotNull final TopicEntityAttributeType topicEntityAttributeType)
             throws MetaStoreException {
         try {

@@ -26,8 +26,9 @@ import java.util.Set;
  *
  * HTTP resource for user level coarse grained APIs.
  *
- * paths: GET /api/v1/topic/attributes
- *        GET /api/v1/cluster/topics
+ * paths: GET /api/v1/topic/entity/attributes
+ *        GET /api/v1/topic/entity/attributes
+ *        GET /api/v1//entity/alert-instances
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")

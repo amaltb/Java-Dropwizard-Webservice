@@ -30,9 +30,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/alert-definitions
  *        GET /api/v1/alert-definition/{id}
- *        DELETE /api/v1/alert-definition/{id}
- *        PUT /api/v1/alert-definition/{id}
- *        POST /api/v1/alert-definition
+ *        DELETE /api/v1/alert-definition/{id}/delete
+ *        PUT /api/v1/alert-definition/{id}/update
+ *        POST /api/v1/alert-definition/create
  */
 @SuppressWarnings({"PMD.PreserveStackTrace", "PMD.PrematureDeclaration", "PMD.UnusedPrivateField", "PMD.SingularField",
         "PMD.UnusedLocalVariable"})
@@ -109,7 +109,7 @@ public class AlertResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular alert definition with its id")
-    @Path(Constants.API_V1_VERSION + "/alert-definition/{id}")
+    @Path(Constants.API_V1_VERSION + "/alert-definition/{id}/delete")
     public Response deleteAlertDefinition(@PathParam("id") final long id) throws MetaStoreException {
         try {
             // fetching the alert to be deleted
@@ -151,7 +151,7 @@ public class AlertResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing alert definition")
-    @Path(Constants.API_V1_VERSION + "/alert-definition/{id}")
+    @Path(Constants.API_V1_VERSION + "/alert-definition/{id}/update")
     public Response updateAlertDefinition(@PathParam("id") final long id, @Valid @NotNull final Alert alertDefinition)
             throws MetaStoreException {
         try {
@@ -194,7 +194,7 @@ public class AlertResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new alert definition")
-    @Path(Constants.API_V1_VERSION + "/alert-definition")
+    @Path(Constants.API_V1_VERSION + "/alert-definition/create")
     public Alert createAlertDefinition(@Valid @NotNull final Alert alertDefinition)
             throws MetaStoreException {
         try {

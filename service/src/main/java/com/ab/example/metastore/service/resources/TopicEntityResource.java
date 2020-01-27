@@ -26,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/topic-entity/{id}
  *        GET /api/v1/topic-entity
- *        DELETE /api/v1/topic-entity/{id}
- *        PUT /api/v1/topic-entity/{id}
- *        POST /api/v1/topic-entity
+ *        DELETE /api/v1/topic-entity/{id}/delete
+ *        PUT /api/v1/topic-entity/{id}/update
+ *        POST /api/v1/topic-entity/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -99,7 +99,7 @@ public class TopicEntityResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular topic-entity by its id")
-    @Path(Constants.API_V1_VERSION + "/topic-entity/{id}")
+    @Path(Constants.API_V1_VERSION + "/topic-entity/{id}/delete")
     public Response deleteTopicEntity(@PathParam("id") final long id) throws MetaStoreException {
         try {
             topicEntityDao.delete(id);
@@ -125,7 +125,7 @@ public class TopicEntityResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing topic-entity")
-    @Path(Constants.API_V1_VERSION + "/topic-entity/{id}")
+    @Path(Constants.API_V1_VERSION + "/topic-entity/{id}/update")
     public Response updateTopicEntity(@PathParam("id") final long id,
                                 @Valid @NotNull final TopicEntity topicEntity)
             throws MetaStoreException {
@@ -154,7 +154,7 @@ public class TopicEntityResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new topic-entity")
-    @Path(Constants.API_V1_VERSION + "/topic-entity")
+    @Path(Constants.API_V1_VERSION + "/topic-entity/create")
     public TopicEntity createTopicEntity(@Valid @NotNull final TopicEntity topic_entity)
             throws MetaStoreException {
         try {

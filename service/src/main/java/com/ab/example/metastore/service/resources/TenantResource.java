@@ -26,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/tenants
  *        GET /api/v1/tenant/{id}
- *        DELETE /api/v1/tenant/{id}
- *        PUT /api/v1/tenant/{id}
- *        POST /api/v1/tenant
+ *        DELETE /api/v1/tenant/{id}/delete
+ *        PUT /api/v1/tenant/{id}/update
+ *        POST /api/v1/tenant/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -98,7 +98,7 @@ public class TenantResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular tenant by its id")
-    @Path(Constants.API_V1_VERSION + "/tenant/{id}")
+    @Path(Constants.API_V1_VERSION + "/tenant/{id}/delete")
     public Response deleteTenant(@PathParam("id") final long id) throws MetaStoreException {
         try {
             tenantDao.delete(id);
@@ -124,7 +124,7 @@ public class TenantResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing tenant")
-    @Path(Constants.API_V1_VERSION + "/tenant/{id}")
+    @Path(Constants.API_V1_VERSION + "/tenant/{id}/update")
     public Response updateTenant(@PathParam("id") final long id,
                                @Valid @NotNull final Tenant tenant)
             throws MetaStoreException {
@@ -153,7 +153,7 @@ public class TenantResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new tenant")
-    @Path(Constants.API_V1_VERSION + "/tenant")
+    @Path(Constants.API_V1_VERSION + "/tenant/create")
     public Tenant createTenant(@Valid @NotNull final Tenant tenant)
             throws MetaStoreException {
         try {

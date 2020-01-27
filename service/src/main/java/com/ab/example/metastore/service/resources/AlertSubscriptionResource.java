@@ -25,9 +25,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/alert-subscriptions
  *        GET /api/v1/alert-subscription/{id}
- *        DELETE /api/v1/alert-subscription/{id}
- *        PUT /api/v1/alert-subscription/{id}
- *        POST /api/v1/alert-subscription
+ *        DELETE /api/v1/alert-subscription/{id}/delete
+ *        PUT /api/v1/alert-subscription/{id}/update
+ *        POST /api/v1/alert-subscription/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -75,7 +75,7 @@ public class AlertSubscriptionResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular alert subscription by its id")
-    @Path(Constants.API_V1_VERSION + "/alert-subscription/{id}")
+    @Path(Constants.API_V1_VERSION + "/alert-subscription/{id}/delete")
     public Response deleteAlertSubscription(@PathParam("id") final long id) throws MetaStoreException {
         try {
             alertSubscriptionDao.delete(id);
@@ -101,7 +101,7 @@ public class AlertSubscriptionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing alert subscription")
-    @Path(Constants.API_V1_VERSION + "/alert-subscription/{id}")
+    @Path(Constants.API_V1_VERSION + "/alert-subscription/{id}/update")
     public Response updateAlertSubscription(@PathParam("id") final long id,
                                         @Valid @NotNull final AlertSubscription alertSubscription)
             throws MetaStoreException {
@@ -130,7 +130,7 @@ public class AlertSubscriptionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new alert subscription")
-    @Path(Constants.API_V1_VERSION + "/alert-subscription")
+    @Path(Constants.API_V1_VERSION + "/alert-subscription/create")
     public AlertSubscription createAlertSubscription(@Valid @NotNull final AlertSubscription alertSubscription)
             throws MetaStoreException {
         try {

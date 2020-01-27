@@ -28,8 +28,7 @@ import java.util.List;
  *
  * paths: GET /api/v1/user/alerts
  *        GET /api/v1//user/dashboards
- *        GET /api/v1/user/profile
- *        GET /api/v1//user/alerts/instances
+ *        GET /api/v1//user/alert-instances
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")

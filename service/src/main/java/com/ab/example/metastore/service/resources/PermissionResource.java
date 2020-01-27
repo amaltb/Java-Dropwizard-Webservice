@@ -26,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/permissions
  *        GET /api/v1/permission/{id}
- *        DELETE /api/v1/permission/{id}
- *        PUT /api/v1/permission/{id}
- *        POST /api/v1/permission
+ *        DELETE /api/v1/permission/{id}/delete
+ *        PUT /api/v1/permission/{id}/update
+ *        POST /api/v1/permission/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -97,7 +97,7 @@ public class PermissionResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular permission by its id")
-    @Path(Constants.API_V1_VERSION + "/permission/{id}")
+    @Path(Constants.API_V1_VERSION + "/permission/{id}/delete")
     public Response deletePermission(@PathParam("id") final long id) throws MetaStoreException {
         try {
             permissionDao.delete(id);
@@ -123,7 +123,7 @@ public class PermissionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing permission")
-    @Path(Constants.API_V1_VERSION + "/permission/{id}")
+    @Path(Constants.API_V1_VERSION + "/permission/{id}/update")
     public Response updatePermission(@PathParam("id") final long id,
                                 @Valid @NotNull final Permission permission)
             throws MetaStoreException {
@@ -152,7 +152,7 @@ public class PermissionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new permission")
-    @Path(Constants.API_V1_VERSION + "/permission")
+    @Path(Constants.API_V1_VERSION + "/permission/create")
     public Permission createPermission(@Valid @NotNull final Permission permission)
             throws MetaStoreException {
         try {

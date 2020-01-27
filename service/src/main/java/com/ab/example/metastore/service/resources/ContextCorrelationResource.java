@@ -25,9 +25,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/context-correlations
  *        GET /api/v1/context-correlation/{id}
- *        DELETE /api/v1/context-correlation/{id}
- *        PUT /api/v1/context-correlation/{id}
- *        POST /api/v1/context-correlation
+ *        DELETE /api/v1/context-correlation/{id}/delete
+ *        PUT /api/v1/context-correlation/{id}/update
+ *        POST /api/v1/context-correlation/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -74,7 +74,7 @@ public class ContextCorrelationResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular context correlation by its id")
-    @Path(Constants.API_V1_VERSION + "/context-correlation/{id}")
+    @Path(Constants.API_V1_VERSION + "/context-correlation/{id}/delete")
     public Response deleteContextCorrelation(@PathParam("id") final long id) throws MetaStoreException {
         try {
             contextToContextMapDao.delete(id);
@@ -100,7 +100,7 @@ public class ContextCorrelationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing context correlation")
-    @Path(Constants.API_V1_VERSION + "/context-correlation/{id}")
+    @Path(Constants.API_V1_VERSION + "/context-correlation/{id}/update")
     public Response updateContextCorrelation(@PathParam("id") final long id,
                                           @Valid @NotNull final ContextToContextMap contextMap)
             throws MetaStoreException {
@@ -129,7 +129,7 @@ public class ContextCorrelationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new context correlation")
-    @Path(Constants.API_V1_VERSION + "/context-correlation")
+    @Path(Constants.API_V1_VERSION + "/context-correlation/create")
     public ContextToContextMap createContextCorrelation(@Valid @NotNull final ContextToContextMap contextMap)
             throws MetaStoreException {
         try {
