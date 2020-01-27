@@ -26,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/topic-entity-attributes
  *        GET /api/v1/topic-entity-attribute/{id}
- *        DELETE /api/v1/topic-entity-attribute/{id}
- *        PUT /api/v1/topic-entity-attribute/{id}
- *        POST /api/v1/topic-entity-attribute
+ *        DELETE /api/v1/topic-entity-attribute/{id}/delete
+ *        PUT /api/v1/topic-entity-attribute/{id}/update
+ *        POST /api/v1/topic-entity-attribute/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -101,7 +101,7 @@ public class TopicEntityAttributeResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular topic-entity-attribute by its id")
-    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute/{id}")
+    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute/{id}/delete")
     public Response deleteTopicEntityAttribute(@PathParam("id") final long id) throws MetaStoreException {
         try {
             topicEntityAttributeDao.delete(id);
@@ -127,7 +127,7 @@ public class TopicEntityAttributeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing topic-entity-attribute")
-    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute/{id}")
+    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute/{id}/update")
     public Response updateTopicEntityAttribute(@PathParam("id") final long id,
                                 @Valid @NotNull final TopicEntityAttribute topicEntityAttribute)
             throws MetaStoreException {
@@ -156,7 +156,7 @@ public class TopicEntityAttributeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new topic-entity-attribute")
-    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute")
+    @Path(Constants.API_V1_VERSION + "/topic-entity-attribute/create")
     public TopicEntityAttribute createTopicEntityAttribute(@Valid @NotNull final TopicEntityAttribute topicEntityAttribute)
             throws MetaStoreException {
         try {

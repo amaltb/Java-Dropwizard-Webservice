@@ -29,9 +29,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/dashboards
  *        GET /api/v1/dashboard/{id}
- *        DELETE /api/v1/dashboard/{id}
- *        PUT /api/v1/dashboard/{id}
- *        POST /api/v1/dashboard
+ *        DELETE /api/v1/dashboard/{id}/delete
+ *        PUT /api/v1/dashboard/{id}/update
+ *        POST /api/v1/dashboard/create
  */
 @SuppressWarnings({"PMD.PreserveStackTrace", "PMD.PrematureDeclaration", "PMD.UnusedPrivateField", "PMD.SingularField",
         "PMD.UnusedLocalVariable"})
@@ -107,7 +107,7 @@ public class DashboardResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular dashboard by its id")
-    @Path(Constants.API_V1_VERSION + "/dashboard/{id}")
+    @Path(Constants.API_V1_VERSION + "/dashboard/{id}/delete")
     public Response deleteDashboard(@PathParam("id") final long id) throws MetaStoreException {
         try {
             // fetching dashboard to be deleted.
@@ -149,7 +149,7 @@ public class DashboardResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing dashboard")
-    @Path(Constants.API_V1_VERSION + "/dashboard/{id}")
+    @Path(Constants.API_V1_VERSION + "/dashboard/{id}/update")
     public Response updateDashboard(@PathParam("id") final long id,
                                           @Valid @NotNull final Dashboard dashboard)
             throws MetaStoreException {
@@ -193,7 +193,7 @@ public class DashboardResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new dashboard")
-    @Path(Constants.API_V1_VERSION + "/dashboard")
+    @Path(Constants.API_V1_VERSION + "/dashboard/create")
     public Dashboard createDashboard(@Valid @NotNull final Dashboard dashboard)
             throws MetaStoreException {
         try {

@@ -26,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/metrics
  *        GET /api/v1/metric/{id}
- *        DELETE /api/v1/metric/{id}
- *        PUT /api/v1/metric/{id}
- *        POST /api/v1/metric
+ *        DELETE /api/v1/metric/{id}/delete
+ *        PUT /api/v1/metric/{id}/update
+ *        POST /api/v1/metric/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -97,7 +97,7 @@ public class MetricResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular metric by its id")
-    @Path(Constants.API_V1_VERSION + "/metric/{id}")
+    @Path(Constants.API_V1_VERSION + "/metric/{id}/delete")
     public Response deleteMetric(@PathParam("id") final long id) throws MetaStoreException {
         try {
             metricDao.delete(id);
@@ -123,7 +123,7 @@ public class MetricResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing metric")
-    @Path(Constants.API_V1_VERSION + "/metric/{id}")
+    @Path(Constants.API_V1_VERSION + "/metric/{id}/update")
     public Response updateMetric(@PathParam("id") final long id,
                                       @Valid @NotNull final Metric metric)
             throws MetaStoreException {
@@ -152,7 +152,7 @@ public class MetricResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new metric")
-    @Path(Constants.API_V1_VERSION + "/metric")
+    @Path(Constants.API_V1_VERSION + "/metric/create")
     public Metric createMetric(@Valid @NotNull final Metric metric)
             throws MetaStoreException {
         try {

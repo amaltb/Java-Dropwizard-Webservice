@@ -30,7 +30,7 @@ Keeping the final version of the service here for reference.
  1. Analytics; e.g. add system metrics to instrument performance of each of the APIs exposed.
  
  ## System APIs
- ![meta-store system APIs](documents/API_n.png)
+ ![meta-store system APIs](documents/API_n)
  
  ## Database Design
  ![meta-store ER diagram](documents/DopplerMetadataModel.png)

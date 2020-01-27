@@ -27,9 +27,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/contexts
  *        GET /api/v1/context/{id}
- *        DELETE /api/v1/context/{id}
- *        PUT /api/v1/context/{id}
- *        POST /api/v1/context
+ *        DELETE /api/v1/context/{id}/delete
+ *        PUT /api/v1/context/{id}/update
+ *        POST /api/v1/context/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -98,7 +98,7 @@ public class ContextResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular context by its id")
-    @Path(Constants.API_V1_VERSION + "/context/{id}")
+    @Path(Constants.API_V1_VERSION + "/context/{id}/delete")
     public Response deleteMetricContext(@PathParam("id") final long id) throws MetaStoreException {
         try {
             contextDao.delete(id);
@@ -124,7 +124,7 @@ public class ContextResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing context")
-    @Path(Constants.API_V1_VERSION + "/context/{id}")
+    @Path(Constants.API_V1_VERSION + "/context/{id}/update")
     public Response updateMetricContext(@PathParam("id") final long id,
                                  @Valid @NotNull final Context metricContext)
             throws MetaStoreException {
@@ -153,7 +153,7 @@ public class ContextResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new context")
-    @Path(Constants.API_V1_VERSION + "/context")
+    @Path(Constants.API_V1_VERSION + "/context/create")
     public Context createMetricContext(@Valid @NotNull final Context metricContext)
             throws MetaStoreException {
         try {

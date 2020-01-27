@@ -25,9 +25,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/widgets
  *        GET /api/v1/widget/{id}
- *        DELETE /api/v1/widget/{id}
- *        PUT /api/v1/widget/{id}
- *        POST /api/v1/widget
+ *        DELETE /api/v1/widget/{id}/delete
+ *        PUT /api/v1/widget/{id}/update
+ *        POST /api/v1/widget/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -75,7 +75,7 @@ public class WidgetResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular widget by its id")
-    @Path(Constants.API_V1_VERSION + "/widget/{id}")
+    @Path(Constants.API_V1_VERSION + "/widget/{id}/delete")
     public Response deleteWidget(@PathParam("id") final long id) throws MetaStoreException {
         try {
             widgetDao.delete(id);
@@ -101,7 +101,7 @@ public class WidgetResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing widget")
-    @Path(Constants.API_V1_VERSION + "/widget/{id}")
+    @Path(Constants.API_V1_VERSION + "/widget/{id}/update")
     public Response updateWidget(@PathParam("id") final long id,
                                               @Valid @NotNull final Widget widget)
             throws MetaStoreException {
@@ -130,7 +130,7 @@ public class WidgetResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new widget")
-    @Path(Constants.API_V1_VERSION + "/widget")
+    @Path(Constants.API_V1_VERSION + "/widget/create")
     public Widget createSubscriptionChannel(@Valid @NotNull final Widget widget)
             throws MetaStoreException {
         try {

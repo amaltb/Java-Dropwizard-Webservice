@@ -26,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/granularities
  *        GET /api/v1/granularity/{id}
- *        DELETE /api/v1/granularity/{id}
- *        PUT /api/v1/granularity/{id}
- *        POST /api/v1/granularity
+ *        DELETE /api/v1/granularity/{id}/delete
+ *        PUT /api/v1/granularity/{id}/update
+ *        POST /api/v1/granularity/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -97,7 +97,7 @@ public class GranularityResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular granularity by its id")
-    @Path(Constants.API_V1_VERSION + "/granularity/{id}")
+    @Path(Constants.API_V1_VERSION + "/granularity/{id}/delete")
     public Response deleteGranularity(@PathParam("id") final long id) throws MetaStoreException {
         try {
             granularityDao.delete(id);
@@ -123,7 +123,7 @@ public class GranularityResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing granularity")
-    @Path(Constants.API_V1_VERSION + "/granularity/{id}")
+    @Path(Constants.API_V1_VERSION + "/granularity/{id}/update")
     public Response updateGranularity(@PathParam("id") final long id,
                                           @Valid @NotNull final Granularity granularity)
             throws MetaStoreException {
@@ -152,7 +152,7 @@ public class GranularityResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new granularity")
-    @Path(Constants.API_V1_VERSION + "/granularity")
+    @Path(Constants.API_V1_VERSION + "/granularity/create")
     public Granularity createGranularity(@Valid @NotNull final Granularity granularity)
             throws MetaStoreException {
         try {

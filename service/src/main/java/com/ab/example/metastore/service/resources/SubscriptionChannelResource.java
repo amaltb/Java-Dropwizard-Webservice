@@ -25,9 +25,9 @@ import javax.ws.rs.core.Response;
  *
  * paths: GET /api/v1/subscription-channels
  *        GET /api/v1/subscription-channel/{id}
- *        DELETE /api/v1/subscription-channel/{id}
- *        PUT /api/v1/subscription-channel/{id}
- *        POST /api/v1/subscription-channel
+ *        DELETE /api/v1/subscription-channel/{id}/delete
+ *        PUT /api/v1/subscription-channel/{id}/update
+ *        POST /api/v1/subscription-channel/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -75,7 +75,7 @@ public class SubscriptionChannelResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular subscription channel by its id")
-    @Path(Constants.API_V1_VERSION + "/subscription-channel/{id}")
+    @Path(Constants.API_V1_VERSION + "/subscription-channel/{id}/delete")
     public Response deleteSubscriptionChannel(@PathParam("id") final long id) throws MetaStoreException {
         try {
             subscriptionChannelDao.delete(id);
@@ -101,7 +101,7 @@ public class SubscriptionChannelResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing subscription channel")
-    @Path(Constants.API_V1_VERSION + "/subscription-channel/{id}")
+    @Path(Constants.API_V1_VERSION + "/subscription-channel/{id}/update")
     public Response updateSubscriptionChannel(@PathParam("id") final long id,
                                         @Valid @NotNull final SubscriptionChannel subscriptionChannel)
             throws MetaStoreException {
@@ -130,7 +130,7 @@ public class SubscriptionChannelResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new subscription channel")
-    @Path(Constants.API_V1_VERSION + "/subscription-channel")
+    @Path(Constants.API_V1_VERSION + "/subscription-channel/create")
     public SubscriptionChannel createSubscriptionChannel(@Valid @NotNull final SubscriptionChannel subscriptionChannel)
             throws MetaStoreException {
         try {

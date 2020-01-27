@@ -26,9 +26,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/model-versions
  *        GET /api/v1/model-version/{id}
- *        DELETE /api/v1/model-version/{id}
- *        PUT /api/v1/model-version/{id}
- *        POST /api/v1/model-version
+ *        DELETE /api/v1/model-version/{id}/delete
+ *        PUT /api/v1/model-version/{id}/update
+ *        POST /api/v1/model-version/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -97,7 +97,7 @@ public class ModelVersionResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular model-version by its id")
-    @Path(Constants.API_V1_VERSION + "/model-version/{id}")
+    @Path(Constants.API_V1_VERSION + "/model-version/{id}/delete")
     public Response deleteModelVersion(@PathParam("id") final long id) throws MetaStoreException {
         try {
             modelVersionDao.delete(id);
@@ -123,7 +123,7 @@ public class ModelVersionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing model-version")
-    @Path(Constants.API_V1_VERSION + "/model-version/{id}")
+    @Path(Constants.API_V1_VERSION + "/model-version/{id}/update")
     public Response updateModelVersion(@PathParam("id") final long id,
                                  @Valid @NotNull final ModelVersion modelVersion)
             throws MetaStoreException {
@@ -152,7 +152,7 @@ public class ModelVersionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new model-version")
-    @Path(Constants.API_V1_VERSION + "/model-version")
+    @Path(Constants.API_V1_VERSION + "/model-version/create")
     public ModelVersion createModelVersion(@Valid @NotNull final ModelVersion modelVersion)
             throws MetaStoreException {
         try {

@@ -23,7 +23,7 @@ import java.util.List;
  *
  * HTTP resource for alert level coarse grained APIs.
  *
- * paths: GET /api/v1/alert/instances
+ * paths: GET /api/v1/alert/alert-instances
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")

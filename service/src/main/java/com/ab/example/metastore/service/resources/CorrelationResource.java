@@ -27,9 +27,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/correlations
  *        GET /api/v1/correlation/{id}
- *        DELETE /api/v1/correlation/{id}
- *        PUT /api/v1/correlation/{id}
- *        POST /api/v1/correlation
+ *        DELETE /api/v1/correlation/{id}/delete
+ *        PUT /api/v1/correlation/{id}/update
+ *        POST /api/v1/correlation/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -100,7 +100,7 @@ public class CorrelationResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular correlation-type by its id")
-    @Path(Constants.API_V1_VERSION + "/correlation/{id}")
+    @Path(Constants.API_V1_VERSION + "/correlation/{id}/delete")
     public Response deleteCorrelationType(@PathParam("id") final long id) throws MetaStoreException {
         try {
             correlationDao.delete(id);
@@ -126,7 +126,7 @@ public class CorrelationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing correlation-type")
-    @Path(Constants.API_V1_VERSION + "/correlation/{id}")
+    @Path(Constants.API_V1_VERSION + "/correlation/{id}/update")
     public Response updateCorrelationType(@PathParam("id") final long id,
                                              @Valid @NotNull final Correlation correlation)
             throws MetaStoreException {
@@ -155,7 +155,7 @@ public class CorrelationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new correlation-type")
-    @Path(Constants.API_V1_VERSION + "/correlation")
+    @Path(Constants.API_V1_VERSION + "/correlation/create")
     public Correlation createCorrelationType(@Valid @NotNull final Correlation correlation)
             throws MetaStoreException {
         try {

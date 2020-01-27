@@ -28,9 +28,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/user-profiles
  *        GET /api/v1/user-profile/{id}
- *        DELETE /api/v1/user-profile/{id}
- *        PUT /api/v1/user-profile/{id}
- *        POST /api/v1/user-profile
+ *        DELETE /api/v1/user-profile/{id}/delete
+ *        PUT /api/v1/user-profile/{id}/update
+ *        POST /api/v1/user-profile/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -103,7 +103,7 @@ public class UserProfileResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular user-profile by its id")
-    @Path(Constants.API_V1_VERSION + "/user-profile/{id}")
+    @Path(Constants.API_V1_VERSION + "/user-profile/{id}/delete")
     public Response deleteUserProfile(@PathParam("id") final long id) throws MetaStoreException {
         try {
             userProfileDao.delete(id);
@@ -129,7 +129,7 @@ public class UserProfileResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing user-profile")
-    @Path(Constants.API_V1_VERSION + "/user-profile/{id}")
+    @Path(Constants.API_V1_VERSION + "/user-profile/{id}/update")
     public Response updateUserProfile(@PathParam("id") final long id,
                                @Valid @NotNull final UserProfile userProfile)
             throws MetaStoreException {
@@ -158,7 +158,7 @@ public class UserProfileResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new user-profile")
-    @Path(Constants.API_V1_VERSION + "/user-profile")
+    @Path(Constants.API_V1_VERSION + "/user-profile/create")
     public UserProfile createUserProfile(@Valid @NotNull final UserProfile userProfile)
             throws MetaStoreException {
         try {

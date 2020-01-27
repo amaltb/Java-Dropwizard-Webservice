@@ -75,7 +75,7 @@ public class AlertInstanceResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular alert instance by its id")
-    @Path(Constants.API_V1_VERSION + "/alert/{id}")
+    @Path(Constants.API_V1_VERSION + "/alert/{id}/delete")
     public Response deleteAlert(@PathParam("id") final long id) throws MetaStoreException {
         try {
             alertInstanceDao.delete(id);
@@ -101,7 +101,7 @@ public class AlertInstanceResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing alert instance")
-    @Path(Constants.API_V1_VERSION + "/alert/{id}")
+    @Path(Constants.API_V1_VERSION + "/alert/{id}/update")
     public Response updateAlert(@PathParam("id") final long id,
                                         @Valid @NotNull final AlertInstance alertInstance)
             throws MetaStoreException {
@@ -130,7 +130,7 @@ public class AlertInstanceResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new alert instance")
-    @Path(Constants.API_V1_VERSION + "/alert")
+    @Path(Constants.API_V1_VERSION + "/alert/create")
     public AlertInstance createAlert(@Valid @NotNull final AlertInstance alertInstance)
             throws MetaStoreException {
         try {

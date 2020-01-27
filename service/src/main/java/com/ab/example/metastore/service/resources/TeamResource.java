@@ -27,9 +27,9 @@ import java.util.List;
  *
  * paths: GET /api/v1/teams
  *        GET /api/v1/team/{id}
- *        DELETE /api/v1/team/{id}
- *        PUT /api/v1/team/{id}
- *        POST /api/v1/team
+ *        DELETE /api/v1/team/{id}/delete
+ *        PUT /api/v1/team/{id}/update
+ *        POST /api/v1/team/create
  */
 @SuppressWarnings("PMD.PreserveStackTrace")
 @Path("/")
@@ -99,7 +99,7 @@ public class TeamResource {
     @UnitOfWork
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Delete a particular team by its id")
-    @Path(Constants.API_V1_VERSION + "/team/{id}")
+    @Path(Constants.API_V1_VERSION + "/team/{id}/delete")
     public Response deleteTeam(@PathParam("id") final long id) throws MetaStoreException {
         try {
             teamDao.delete(id);
@@ -125,7 +125,7 @@ public class TeamResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Update an existing team")
-    @Path(Constants.API_V1_VERSION + "/team/{id}")
+    @Path(Constants.API_V1_VERSION + "/team/{id}/update")
     public Response updateTeam(@PathParam("id") final long id,
                                               @Valid @NotNull final Team team)
             throws MetaStoreException {
@@ -154,7 +154,7 @@ public class TeamResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Create a new team")
-    @Path(Constants.API_V1_VERSION + "/team")
+    @Path(Constants.API_V1_VERSION + "/team/create")
     public Team createTeam(@Valid @NotNull final Team team)
             throws MetaStoreException {
         try {
